@@ -1,0 +1,59 @@
+<div class="modal fade" id="uploadFilesModal" tabindex="-1" role="dialog" aria-labelledby="uploadFilesModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Upload files</h4>
+            </div>
+            <div class="modal-body">
+                <div class="well well-lg"id="filesUploadArea">
+                    <h4 class="input-invis"><span class="glyphicon glyphicon-picture glyphicon-large"></span>&nbsp;Click or drag files here to upload.</h4>
+                </div>
+
+                <div class="panel panel-default" ng-show="uploadFilesCtrl.showPreview()">
+                    <div class="panel-body dropzone-previews" id="filesUploadPreview">
+                        <div class="row file-row" id="filesUploadPreviewTemplate">
+                            <div class="col-md-2 col-sm-2 col-xs-3">
+                                <span class="preview"><img data-dz-thumbnail /></span>
+                            </div>
+                            <div class="col-md-10 col-sm-10 col-xs-9">
+                                <div class="row">
+                                    <div class="col-md-8 col-sm-8 col-xs-8">
+                                        <p class="name" data-dz-name></p>
+                                        <strong class="error text-danger" data-dz-errormessage></strong>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 col-xs-4">
+                                        <p class="size" data-dz-size></p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-7 col-sm-7 col-xs-8">
+                                        <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                            <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5 col-sm-5 col-xs-6">
+                                        <button class="btn btn-primary start">
+                                            <i class="glyphicon glyphicon-upload"></i>
+                                            <span>Upload</span>
+                                        </button>
+                                        <button data-dz-remove class="btn btn-warning cancel">
+                                            <i class="glyphicon glyphicon-ban-circle"></i>
+                                        </button>
+                                        <button data-dz-remove class="btn btn-info delete">
+                                            <i class="glyphicon glyphicon-ok"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="spacer10"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" ng-class="{disabled: uploadFilesCtrl.disable}" ng-click="uploadFilesCtrl.closed()">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

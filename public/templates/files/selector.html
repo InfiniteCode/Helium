@@ -1,0 +1,28 @@
+<div class="dropdown clearfix">
+    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown">
+        Image from Files
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
+        <li role="presentation" class="dropdown-header">Folders
+        </li>
+        <li role="presentation" ng-show="filesSelectorCtrl.currentPath.length > 0" ng-click="filesSelectorCtrl.folderGoUp($event)">
+            <a role="menuitem" tabindex="-1" href  >..</a>
+        </li>
+
+        <li role="presentation" class="disabled" ng-hide="filesSelectorCtrl.currentFolder().fetching == false" >
+            <a role="menuitem" tabindex="-1" href="#" ><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>&nbsp;Fetching...</a>
+        </li>
+
+        <li role="presentation" ng-repeat="folder in filesSelectorCtrl.currentFolder().folders" ng-click="filesSelectorCtrl.folderGoIn(folder.id, $event)">
+            <a role="menuitem" tabindex="-1" href="#" >{{folder.title}}</a>
+        </li>
+        <li role="presentation" class="divider"></li>
+        <li role="presentation" class="dropdown-header">Files</li>
+        <li role="presentation" ng-repeat="file in filesSelectorCtrl.currentFolder().files" ng-click="filesSelectorCtrl.selectFile(file)">
+            <a role="menuitem" tabindex="-1" href="#">
+                <img class="img-responsive dropdown-preview" ng-src="{{file.thumbUrl}}" alt="">{{file.name}}
+            </a>
+        </li>
+    </ul>
+</div>

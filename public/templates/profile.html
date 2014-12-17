@@ -1,0 +1,85 @@
+<div class="container">
+    <div class="row">
+        <h2>Profile Setup</h2>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                        <input type="text" class="form-control" placeholder="First Name" ng-model="profileCtrl.user.nameFirst">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                        <input type="text" class="form-control" placeholder="Last Name" ng-model="profileCtrl.user.nameLast">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
+                        <input type="email" class="form-control" placeholder="Email" ng-model="profileCtrl.user.email">
+                    </div>
+                    <br>
+                    <div class="alert alert-danger" role="alert" ng-show="profileCtrl.hasDetailsError()">{{profileCtrl.errorDetailsMsg}}</div>
+                    <button type="button" class="btn btn-default" ng-click="profileCtrl.changeDetails()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
+                        <input type="password" class="form-control" placeholder="Old Password" ng-model="profileCtrl.pass.old">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
+                        <input type="password" class="form-control" placeholder="New Password" ng-model="profileCtrl.pass.new">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
+                        <input type="password" class="form-control" placeholder="New Password" ng-model="profileCtrl.pass.conf">
+                    </div>
+                    <br>
+                    <div class="alert alert-danger" role="alert" ng-show="profileCtrl.hasPassError()">{{profileCtrl.errorPassMsg}}</div>
+                    <button type="button" class="btn btn-default" ng-click="profileCtrl.changePassword()">Change Password</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <h5>General Config</h5>
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <textarea class="form-control" rows="6" placeholder="" required ng-model="profileCtrl.config.general"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="alert alert-danger" role="alert" ng-show="profileCtrl.hasGeneralError()">{{profileCtrl.errorGeneralCfgMsg}}</div>
+            <button type="button" class="btn btn-default" ng-click="profileCtrl.changeGeneralConfig()">Save General Configuration</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <h5>Navigation Bar Setup</h5>
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <textarea class="form-control" rows="15" placeholder="" required ng-model="profileCtrl.config.navbar"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="alert alert-danger" role="alert" ng-show="profileCtrl.hasNavbarError()">{{profileCtrl.errorNavbarCfgMsg}}</div>
+            <button type="button" class="btn btn-default" ng-click="profileCtrl.changeNavbarConfig()">Save NavBar Configuration</button>
+        </div>
+    </div>
+
+    <hr class="bs-docs-separator">
+</div>
+

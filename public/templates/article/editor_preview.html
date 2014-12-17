@@ -1,0 +1,21 @@
+<div class="container">
+    <div class="row" >
+        <hr class="bs-docs-separator">
+        <div class="bs-docs-section">
+
+            <h1>{{editorCtrl.currentArticle.titleWIP}}</h1>
+            <h6><small>{{editorCtrl.getPreviewWhenAndWho()}}</small></h6>
+            <div ng-bind-html="editorCtrl.currentArticle.body.wip | unsafe"></div>
+
+            <!-- button type="button" class="btn btn-default">Continue reading...</button -->
+            <h6 class="text-center"><small>{{editorCtrl.getPreviewTags()}}</small></h6>
+            <hr class="bs-docs-separator">
+        </div>
+
+        <div class="col-lg-2">
+            <button type="button" class="btn btn-primary" ng-disabled="!editorCtrl.currentArticle.modified" ng-click="editorCtrl.saveArticle()">Save</button>
+            <button type="button" class="btn btn-info" ng-disabled="editorCtrl.currentArticle.status!='modified' && editorCtrl.currentArticle.status != 'draft'" ng-click="editorCtrl.postArticle(editorCtrl.currentArticle.id)">Post</button>
+        </div>
+
+    </div>
+</div>

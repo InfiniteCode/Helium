@@ -1,0 +1,15 @@
+<ul class="nav navbar-nav navbar-right">
+    <p class="navbar-text" >Welcome, <b>{{navbarUserCtrl.userService.currentUser.nameFirst}} {{navbarUserCtrl.userService.currentUser.nameLast}}</b></p>
+
+    <li class="dropdown">
+        <a href= class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-th-list"></span></a>
+        <ul class="dropdown-menu" role="menu">
+            <li ng-class="{disabled: navbarUserCtrl.navbarService.editorOn}" ><a href ng-click="navbarUserCtrl.write()"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Write</a></li>
+            <li ng-class="{disabled: navbarUserCtrl.navbarService.filesOn}" ><a href ng-click="navbarUserCtrl.files()"><span class="glyphicon glyphicon-picture"></span>&nbsp;Files</a></li>
+            <li ng-class="{disabled: navbarUserCtrl.navbarService.profileOn}" ><a href ng-click="navbarUserCtrl.profile()"><span class="glyphicon glyphicon-user"></span>&nbsp;Profile</a></li>
+            <li><a href data-toggle="modal" data-target="#aboutModal"><span class="glyphicon glyphicon-info-sign"></span>&nbsp;About</a></li>
+            <li class="divider"></li>
+            <li><a href ng-click="navbarUserCtrl.signOut()" >Sign Out</a></li>
+        </ul>
+    </li>
+</ul>

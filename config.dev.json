@@ -1,0 +1,38 @@
+{
+    "db": {
+        "host": "127.0.0.1",
+        "port": 3306,
+        "user": "root",
+        "password": "",
+        "database": "helium",
+        "charset": "utf8"
+    },
+
+    "secret": {
+        "session": "23409jr3498h9f7h34!@R$!@40-ei239"
+    },
+
+    "upload": {
+        "method": "disk",
+        "disk": {
+            "path": "public/images/users",
+            "accessPath": "/images/users"
+        },
+
+        "s3": {
+            "bucket": "dev_fs",
+            "aws_access_key": "AWS_ACCESS_KEY",
+            "aws_secret_key": "AWS_SECRET_KEY"
+        }
+    },
+
+    "mail": {
+        "user": "AWS_SES_ACCESS_KEY",
+        "pass": "AWS_SES_SECRET_KEY",
+        "region": "us-east-1",
+        "service": {
+            "from": "mailsender@email.com",
+            "to": "admin@email.com"
+        }
+    }
+}

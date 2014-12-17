@@ -1,0 +1,131 @@
+<div class="container">
+    <div class="row">
+        <h2>Files</h2>
+    </div>
+
+    <div class="row">
+        <ol class="breadcrumb">
+            <li ng-click="filesCtrl.currentFolderPath = [];"><a href >Files</a></li>
+            <li ng-repeat="pathFolder in filesCtrl.getCurFolderPathNames()"
+                ng-click="filesCtrl.folderGoUpTill(pathFolder.id)"
+                ng-class="{active: filesCtrl.lastInPath(pathFolder.id)}">
+                {{filesCtrl.lastInPath(pathFolder.id) == true ? pathFolder.title : ""}}
+                <a href ng-show="!filesCtrl.lastInPath(pathFolder.id)">{{pathFolder.title}}</a>
+            </li>
+        </ol>
+    </div>
+
+
+    <div class="row">
+        <button type="button" class="btn btn-default" ng-click="filesCtrl.newFolder()"><span class="glyphicon glyphicon-folder-open"></span>&nbsp;&nbsp;New Folder</button>
+        <button type="button" class="btn btn-default" ng-click="filesCtrl.uploadFiles(null, $event)"><span class="glyphicon glyphicon-cloud-upload"></span>&nbsp;Upload Images</button>
+        <toggle-switch model="filesCtrl.editMode" on-label="Edit" off-label="Off"  class="switch-primary switch-large"></toggle-switch>
+
+        <div class="spacer20"></div>
+    </div>
+
+    <div>
+        <div class="row">
+            <div class="list-group">
+                <a href class="list-group-item" ng-show="filesCtrl.currentFolderPath.length > 0"
+                   ng-click="filesCtrl.folderGoUp()">
+                    ..
+                </a>
+
+                <a href class="list-group-item" ng-repeat="folder in filesCtrl.filesService.getFolder(filesCtrl.currentFolderPath).folders | orderBy:'createdOn':true" ng-click="filesCtrl.enterFolder(folder.id)"
+                        ng-class="{'list-group-item-info': filesCtrl.isFolderSelected(folder.id)}" >
+                    <div class="row">
+                        <div class="col-md-10 col-sm-9 col-xs-8" >
+
+                            <button type="button" class="btn btn-default btn-xs" ng-if="filesCtrl.editMode == true" ng-click="filesCtrl.selectFolder(folder.id, $event);">
+                                <span ng-if="!filesCtrl.isFolderSelected(folder.id)">&nbsp;&nbsp;&nbsp;</span>
+                                <span ng-if="filesCtrl.isFolderSelected(folder.id)" class="glyphicon glyphicon-ok"></span>
+                            </button><span ng-if="filesCtrl.editMode == true">&nbsp;</span>
+
+                            <button ng-if="filesCtrl.isFolderSelected(folder.id) && filesCtrl.currentFolderPath.length > 0 && filesCtrl.editMode == true" type="button" class="btn btn-primary btn-xs" ng-click="filesCtrl.moveFolderUp(folder.id, $event);">
+                                <span class="glyphicon glyphicon-arrow-up"></span>
+                            </button><span ng-if="filesCtrl.isFolderSelected(folder.id) && filesCtrl.currentFolderPath.length > 0 && filesCtrl.editMode == true">&nbsp;</span>
+
+                            <button ng-if="!filesCtrl.isFolderSelected(folder.id) && (filesCtrl.selectedFolders.length > 0 || filesCtrl.selectedFiles.length > 0) && filesCtrl.editMode == true" type="button" class="btn btn-primary btn-xs" ng-click="filesCtrl.moveIntoFolder(folder.id, $event);">
+                                <span class="glyphicon glyphicon-arrow-right"></span>
+                            </button><span ng-if="!filesCtrl.isFolderSelected(folder.id) && (filesCtrl.selectedFolders.length > 0 || filesCtrl.selectedFiles.length > 0) && filesCtrl.editMode == true">&nbsp;</span>
+
+                            <button type="button" class="btn btn-primary btn-xs" ng-if="filesCtrl.editMode == true" ng-click="filesCtrl.renameFolder(folder.id, folder.title, $event);">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </button><span ng-if="filesCtrl.editMode == true">&nbsp;</span>
+                            <i class="glyphicon glyphicon-folder-open"></i>&nbsp;&nbsp;{{folder.title}}
+                        </div>
+
+                        <div class="col-md-2 col-sm-3 col-xs-4">
+                            <button type="button" class="btn btn-primary btn-xs" ng-click="filesCtrl.uploadFiles(folder.id, $event);">
+                                <span class="glyphicon glyphicon-cloud-upload"></span>
+                            </button>
+                            <button type="button" class="btn btn-primary btn-xs" ng-if="filesCtrl.editMode == true" ng-click="filesCtrl.shareFolder(folder.id, $event);">
+                                <span class="glyphicon glyphicon-user"></span>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-xs" ng-if="filesCtrl.editMode == true" ng-click="filesCtrl.deleteFolder(folder.id, $event);">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </div>
+                    </div>
+                </a>
+
+                <a href class="list-group-item" ng-if="filesCtrl.editMode == true" ng-repeat="file in filesCtrl.filesService.getFolder(filesCtrl.currentFolderPath).files | orderBy:'createdOn':true"
+                   ng-class="{'list-group-item-info': filesCtrl.isFileSelected(file.id)}">
+                    <div class="row">
+                        <div class="col-md-10 col-sm-9 col-xs-8" >
+                            <button type="button" class="btn btn-default btn-xs" ng-if="filesCtrl.editMode == true" ng-click="filesCtrl.selectFile(file.id, $event);">
+                                <span ng-if="!filesCtrl.isFileSelected(file.id)">&nbsp;&nbsp;&nbsp;</span>
+                                <span ng-if="filesCtrl.isFileSelected(file.id)" class="glyphicon glyphicon-ok"></span>
+                            </button><span ng-if="filesCtrl.editMode == true">&nbsp;</span>
+
+                            <button ng-if="filesCtrl.isFileSelected(file.id) && filesCtrl.currentFolderPath.length > 0 && filesCtrl.editMode == true" type="button" class="btn btn-primary btn-xs" ng-click="filesCtrl.moveFileUp(file.id, $event);">
+                                <span class="glyphicon glyphicon-arrow-up"></span>
+                            </button><span ng-if="filesCtrl.isFileSelected(file.id) && filesCtrl.currentFolderPath.length > 0 && filesCtrl.editMode == true">&nbsp;</span>
+
+                            <button type="button" class="btn btn-primary btn-xs" ng-if="filesCtrl.editMode == true" ng-click="filesCtrl.renameFile(file.id, file.name, $event);">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </button><span ng-if="filesCtrl.editMode == true">&nbsp;</span>
+                            {{file.name}}
+                        </div>
+
+                        <div class="col-md-2 col-sm-3 col-xs-4">
+                            <button type="button" class="btn btn-primary btn-xs" ng-click="filesCtrl.shareFile(file.id, $event);">
+                                <span class="glyphicon glyphicon-user"></span>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-xs" ng-click="filesCtrl.deleteFile(file.id, $event);">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="row" ng-if="filesCtrl.editMode != true">
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb" ng-repeat="file in filesCtrl.filesService.getFolder(filesCtrl.currentFolderPath).files | orderBy:'createdOn':true">
+
+                <a href="{{file.url}}" class="thumbnail" onclick="return hs.expand(this)">
+                    <img class="img-responsive" ng-src="{{filesCtrl.getThumbUrl(file)}}" alt=""/>
+                </a>
+            </div>
+        </div>
+
+
+
+        <div class="row">
+            <div class="bs-callout bs-callout-info" ng-hide="filesCtrl.filesService.getFolder(filesCtrl.currentFolderPath).files.length > 0">
+                <h4 ng-show="filesCtrl.filesService.getFolder(filesCtrl.currentFolderPath).fetching == true">
+                    <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>&nbsp;Retrieving folder...
+                </h4>
+                <h4 ng-show="filesCtrl.filesService.getFolder(filesCtrl.currentFolderPath).fetching == false" >No files uploaded yet</h4>
+            </div>
+        </div>
+    </div>
+
+    <hr class="bs-docs-separator">
+</div>
+
+<hel-files-new-folder-modal></hel-files-new-folder-modal>
+<hel-files-upload-modal></hel-files-upload-modal>
+<hel-files-rename-item-modal></hel-files-rename-item-modal>

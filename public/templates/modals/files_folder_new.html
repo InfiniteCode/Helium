@@ -1,0 +1,22 @@
+<div class="modal fade" id="newFilesFolderModal" tabindex="-1" role="dialog" aria-labelledby="newFilesFolderModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" ng-click="newFilesFolderCtrl.cancelled()" ng-class="{disabled: newFilesFolderCtrl.disable}"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Create new folder</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group" ng-class="{'has-error': newFilesFolderCtrl.errorMessage != null}">
+                    <label class="control-label" ng-hide="newFilesFolderCtrl.errorMessage == null">{{newFilesFolderCtrl.errorMessage}}</label>
+                    <input type="text" class="form-control" id="newFolderInput" placeholder="Enter folder name" ng-model="newFilesFolderCtrl.folderName">
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" ng-click="newFilesFolderCtrl.cancelled()" ng-class="{disabled: newFilesFolderCtrl.disable}">Cancel</button>
+                <button type="button" class="btn btn-success" ng-click="newFilesFolderCtrl.confirmed()" ng-class="{disabled: newFilesFolderCtrl.disable}">Create</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

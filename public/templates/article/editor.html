@@ -1,0 +1,24 @@
+<div class="container">
+    <div class="row">
+        <h2>Write an article</h2>
+    </div>
+
+    <div class="row">
+        <ul class="nav nav-pills">
+            <li ng-repeat="tab in editorCtrl.tabs" ng-class="{'active': tab.id == editorCtrl.currentTab, 'disabled': !editorCtrl.allowTab(tab.id)}" >
+                <a ng-click="editorCtrl.switchTab(tab.title)" href>{{tab.title}}</a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div ng-repeat="tab in editorCtrl.tabs" ng-show="tab.id == editorCtrl.currentTab" ng-include="tab.content" ng-class="tab-pane"></div>
+        </div>
+
+    </div>
+
+    <hr class="bs-docs-separator">
+</div>
+
+<hel-save-article-modal></hel-save-article-modal>
+<hel-delete-article-modal></hel-delete-article-modal>
+

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="hel-app">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= config.title %></title>
+
+    <link href="/stylesheets/bootstrap.css" rel="stylesheet">
+    <link href="/stylesheets/font-awesome.min.css" rel="stylesheet">
+    <% if(typeof loginData != 'undefined') {%>
+        <link href="/javascripts/summernote/summernote.css" rel="stylesheet">
+        <link href="/javascripts/ngtags/ng-tags-input.css" rel="stylesheet">
+        <link href="/javascripts/highslide-4.1.13/highslide/highslide.css" rel="stylesheet">
+    <% } %>
+    <!-- link href="/javascripts/ladda/ladda-themeless.min.css" rel="stylesheet" -->
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="/javascripts/html5shiv.min.js"></script>
+    <script src="/respond.min.js"></script>
+    <![endif]-->
+
+    <link href="/stylesheets/main.css" rel="stylesheet">
+</head>
+<body>
+    <script type="text/javascript">
+        var config = {
+            navbar: <%- config.navbar %>,
+            about: <%= config.about %>,
+            terms: <%= config.terms %>,
+            privacy: <%= config.privacy %>,
+            title: "<%= config.title %>",
+            disqus: "<%= config.disqus %>"
+        };
+
+        <% if(typeof loginData != 'undefined') {%>
+            var autoLoginData = <%- loginData %>;
+        <% } %>
+    </script>
+
+
+<hel-navbar></hel-navbar>
+<hel-body></hel-body>
+    <% if(typeof loginData != 'undefined') {%>
+<hel-editor ng-show="bodyCtrl.navbarService.editorOn"></hel-editor>
+<hel-files ng-show="bodyCtrl.navbarService.filesOn"></hel-files>
+<hel-profile ng-show="bodyCtrl.navbarService.profileOn"></hel-profile>
+    <% } %>
+
+<hel-footer></hel-footer>
+<hel-about-modal></hel-about-modal>
+    <% if(typeof loginData == 'undefined') {%>
+<hel-signin-modal></hel-signin-modal>
+    <% } %>
+
+
+<script src="/javascripts/jquery-2.1.1.js"></script>
+<script src="/javascripts/bootstrap.js"></script>
+<script src="/javascripts/datejs/date.js"></script>
+<script src="/javascripts/notify/notify.js"></script>
+<script src="/javascripts/angular-1.3.0/angular.js"></script>
+<script src="/javascripts/angular-1.3.0/angular-sanitize.js"></script>
+
+    <% if(typeof loginData != 'undefined') {%>
+<script src="/javascripts/summernote/summernote.js"></script>
+<script src="/javascripts/dropzone-3.10.2/downloads/dropzone.js"></script>
+<script src="/javascripts/highslide-4.1.13/highslide/highslide.js"></script>
+<script type="text/javascript"> hs.graphicsDir = '/javascripts/highslide-4.1.13/highslide/graphics/' </script>
+<script src="/javascripts/angular-toggle-switch.min.js"></script>
+<script src="/javascripts/ngtags/ng-tags-input.js"></script>
+
+<script src="/javascripts/helium/services.js"></script>
+<script src="/javascripts/helium/services.user.js"></script>
+<script src="/javascripts/helium/navbar.user.js"></script>
+<script src="/javascripts/helium/profile.js"></script>
+<script src="/javascripts/helium/files.js"></script>
+<script src="/javascripts/helium/article.js"></script>
+<script src="/javascripts/helium/editor.js"></script>
+<script src="/javascripts/helium/app.user.js"></script>
+    <% } else { %>
+<script src="/javascripts/helium/services.js"></script>
+<script src="/javascripts/helium/article.js"></script>
+<script src="/javascripts/helium/navbar.guest.js"></script>
+<script src="/javascripts/helium/app.guest.js"></script>
+    <% } %>
+</body>
+</html>

@@ -1,0 +1,13 @@
+<div class="bs-docs-section">
+
+    <h1><%= article.title %></h1>
+    <h6><small><%= article.whoAndWhen %></small></h6>
+    <div><%= article.body %></div>
+
+    <h6 class="text-center"><small><%= article.tags %></small></h6>
+    <hr class="bs-docs-separator">
+
+    <% if(article.comments) {%>
+        <% include comments.ejs %>
+    <% } %>
+</div>
