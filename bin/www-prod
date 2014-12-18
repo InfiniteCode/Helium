@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+var app = require('../app');
+var express = require('express');
+var https = require('https');
+var fs = require('fs');
+var domain = "www.yourdomain.com";
+
+// This line is from the Node.js HTTPS documentation.
+var options = {
+    key: fs.readFileSync('cert/ssl.key'),
+    cert: fs.readFileSync('cert/ssl.cert')
+};
+
+var http = express();
+// set up a route to redirect http to https
+http.get('*',function(req, res){
+    res.redirect('https://' + domain + req.url)
+})
+http.listen(8080);
+
+
+https.createServer(options, app).listen(4433);
