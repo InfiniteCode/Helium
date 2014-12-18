@@ -40,10 +40,19 @@ app.use(session({
 app.use(flash()); // use connect-flash for flash messages stored in session
 app.use(express.static(path.join(__dirname, 'public')));
 
+if (app.get('env') !== 'development') {
+    app.get('/*', function (req, res, next) {
+        if (req.headers.host.match(/^www/) == null) res.redirect(req.protocol + '://www.' + req.headers.host + req.url, 301);
+        else next();
+    });
+}
+
 app.use('/', routes);
 app.use('/auth', auth);
 app.use('/editor', editor);
 app.use('/files', files);
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
