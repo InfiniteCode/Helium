@@ -42,7 +42,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 if (app.get('env') !== 'development') {
     app.get('/*', function (req, res, next) {
-        if (req.headers.host.match(/^www/) == null) res.redirect(req.protocol + '://www.' + req.headers.host + req.url, 301);
+        if (req.headers.host.match(/^www/) == null) res.redirect(301, req.protocol + '://www.' + req.headers.host + req.url);
         else next();
     });
 }

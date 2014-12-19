@@ -16,7 +16,7 @@ var http = express();
 http.get('*',function(req, res){
     res.redirect('https://' + domain + req.url)
 })
-http.listen(8080);
+http.listen(80);
 
 
-https.createServer(options, app).listen(4433);
+https.createServer(options, app).listen(443);

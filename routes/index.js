@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 var auth = require('./../modules/auth');
 var da = require('./../modules/data-access');
+var mailer = require('./../modules/mailer');
 
 var navbarDef = JSON.stringify([
     {
@@ -235,6 +236,23 @@ router.get('/author/:id', function(req, res) {
             });
         }
     });
+});
+
+
+
+
+router.post('/contact/send', function(req, res) {
+    if(req.body.email == "" || req.body.email.length < 3 || req.body.email.indexOf("@") < 0) {
+        res.json({
+            code: -1,
+            message: "Not a valid email."
+        });
+    } else {
+        mailer.sendServiceEmail(req.body.email, "Message from " + req.body.name, req.body.message);
+        res.json({
+            code: 0
+        });
+    }
 });
 
 
