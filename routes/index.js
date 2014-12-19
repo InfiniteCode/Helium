@@ -150,7 +150,7 @@ function getRawArticle(id, cb, idUrl) {
 
             var whoAndWhen = "On " + months[publishedOn.getMonth()] + " " + publishedOn.getDate() + ", " + publishedOn.getFullYear() +
                 " by " + m.relations.author.get("name_first") + " " + m.relations.author.get("name_last") +
-                " at " + publishedOn.getHours() + ":" + publishedOn.getMinutes();
+                " at " + publishedOn.getHours() + ":" + ("0" + publishedOn.getMinutes()).slice(-2);
 
             var tags = [];
             for(var i = 0, len = m.relations.uniTags.models.length; i < len; ++i)
