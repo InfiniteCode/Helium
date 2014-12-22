@@ -1,0 +1,31 @@
+<div class="modal fade" id="contactModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Contact</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="senderEmailInput">Your email</label>
+                    <input type="email" class="form-control" id="senderEmailInput" placeholder="Enter your email" required ng-model="contactCtrl.sender.email">
+                </div>
+                <div class="form-group">
+                    <label for="senderNameInput">Your name</label>
+                    <input type="text" class="form-control" id="senderNameInput" placeholder="Enter your name" ng-model="contactCtrl.sender.name">
+                </div>
+                <div class="form-group">
+                    <label for="senderMessageInput">Your message</label>
+                    <textarea class="form-control" rows="5" id="senderMessageInput" placeholder="Type message here..." required ng-model="contactCtrl.sender.message"></textarea>
+                </div>
+
+                <div class="alert alert-danger" role="alert" ng-show="contactCtrl.hasError()">{{contactCtrl.errorMsg}}</div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" ng-click="contactCtrl.send()">Send</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="contactCtrl.cancel()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
