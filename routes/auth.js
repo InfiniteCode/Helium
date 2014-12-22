@@ -120,6 +120,7 @@ router.post('/config/general/change', function(req, res) {
                         case "terms": { cfg[i].attributes["data"] = req.body.cfg.terms; cfg[i].save().then(function(){})} break;
                         case "privacy": { cfg[i].attributes["data"] = req.body.cfg.privacy; cfg[i].save().then(function(){})} break;
                         case "disqus": { cfg[i].attributes["data"] = req.body.cfg.disqus; cfg[i].save().then(function(){})} break;
+                        case "tracking": { cfg[i].attributes["data"] = req.body.cfg.tracking; cfg[i].save().then(function(){})} break;
                     }
 
                     res.json({code: 0});

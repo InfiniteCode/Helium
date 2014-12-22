@@ -7,12 +7,26 @@
         $rootScope.$on('$locationChangeSuccess', function () {
             var url = $location.path();
             var parts = url.split('/');
-            nbm.setCurrentPage(parts[1], parts[2]);
+            var loadContent = function() {
+                if(document.getElementById("dynamicContent") == null) {
+                    //We need to make sure our dynamic block is already created, so delay
+                    //execution if needed
+                    setTimeout(loadContent, 50);
+                } else {
+                    if(url.indexOf("/r/") == 0)
+                        nbm.openArticle(url);
+                    else
+                        nbm.setCurrentPage(parts[1], parts[2]);
+                }
+            };
+
+            loadContent();
         });
 
         this.pages = config.navbar;
         this.currentPage = this.pages[0];
         this.currentSubPage = null;
+        this.articleOn = false;
 
         this.simplePages = function(){
             return $.grep(this.pages, function(p) { return p.type == 1; });
@@ -20,6 +34,7 @@
 
         this.hideAll = function() {
             this.currentPage = null;
+            this.articleOn = false;
         };
 
         this.blogOn = function() {
@@ -28,6 +43,15 @@
 
         this.getArticleContentUrl = function(id) {
             return "/raw/article/" + id;
+        };
+
+        this.openArticle = function(url) {
+            this.hideAll();
+            this.articleOn = true;
+            pageId = null;
+            subPageId = null;
+            $( "#dynamicContent" ).empty();
+            $( "#dynamicContent" ).load(url);
         };
 
         this.setCurrentPage = function(pageId, subPageId) {
@@ -62,7 +86,7 @@
         };
 
         this.isCurrentPageDynamic = function() {
-            return this.currentPage != null && this.currentPage.type != 0;
+            return (this.currentPage != null && this.currentPage.type != 0) || this.articleOn;
         };
 
         this.isCurrentPage = function(pageId) {

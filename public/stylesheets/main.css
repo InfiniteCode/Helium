@@ -20,6 +20,10 @@ img.dropdown-preview {
     height: 64px;
 }
 
+a.gray-link {
+    color: #333333;
+}
+
 h2.bodycut {
     background:
         linear-gradient(135deg, #FFF 25%, transparent 25%) -20px 0,

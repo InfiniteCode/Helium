@@ -31,7 +31,8 @@ var generalDef = {
         title: "Personal Blog and Portal",
         terms: 4,
         privacy: 5,
-        disqus: "AlexKhilko"
+        disqus: "AlexKhilko",
+        tracking: null
     };
 
 function prepareConfigurable(cb) {
@@ -42,7 +43,8 @@ function prepareConfigurable(cb) {
             title: generalDef.title,
             terms: generalDef.terms,
             privacy: generalDef.privacy,
-            disqus: generalDef.disqus
+            disqus: generalDef.disqus,
+            tracking: generalDef.tracking
         };
 
         if(configs == null) {
@@ -56,6 +58,7 @@ function prepareConfigurable(cb) {
                 case "terms": cfg.terms = configs[i].get("data"); break;
                 case "privacy": cfg.privacy = configs[i].get("data"); break;
                 case "disqus": cfg.disqus = configs[i].get("data"); break;
+                case "tracking": cfg.tracking = configs[i].get("data"); break;
             }
         }
 
@@ -71,6 +74,7 @@ function rootResponse(req, res, urlId) {
     prepareConfigurable(function(content) {
         loadFrontContent(urlId, function(article) {
 
+        if(article) article = article.article; //Extra one level up the article
         var cookieEmail = req.cookies.email;
         var cookieToken = req.cookies.token;
         if(cookieEmail && cookieToken) {
@@ -107,6 +111,16 @@ function rootResponse(req, res, urlId) {
 
 router.get('/', function(req, res) {
     rootResponse(req, res);
+});
+
+router.get('/r/*', function(req, res) {
+    //TODO Consider adding a security check here for unpublished or private articles
+    getRawArticle(req.originalUrl.substr(3), function(m) {
+        if(m == null)
+            res.status(400).send('Access denied.');
+        else
+            res.render('article', m);
+    }, true);
 });
 
 router.get('/articles/:skip/:amount', function(req, res) {

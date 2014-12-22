@@ -12,7 +12,7 @@ var Config = bookshelf.Model.extend(
             callback = callback ? callback : function() {};
             new Config()
                 .query(function(qb) {
-                    qb.where("id", "in", ["navbar", "about", "title", "terms", "privacy", "disqus"])
+                    qb.where("id", "in", ["navbar", "about", "title", "terms", "privacy", "disqus", "tracking"])
                 })
                 .fetchAll()
                 .then(function(model) {

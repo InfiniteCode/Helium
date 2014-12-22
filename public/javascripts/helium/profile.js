@@ -17,7 +17,8 @@
                             about: "",
                             terms: "",
                             privacy: "",
-                            disqus: ""
+                            disqus: "",
+                            tracking: ""
                         }
                     };
 
@@ -65,6 +66,7 @@
                             ctrlT.config.general.terms = config.terms;
                             ctrlT.config.general.privacy = config.privacy;
                             ctrlT.config.general.disqus = config.disqus;
+                            ctrlT.config.general.tracking = config.tracking;
                             ctrlT.config.general = angular.toJson(ctrlT.config.general, true);
                         }
                     });
