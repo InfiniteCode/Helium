@@ -18,7 +18,7 @@
         </td>
     </tr>
 
-    <tr ng-repeat="article in editorCtrl.articles | orderBy:'createdOn':true" ng-class="{info: editorCtrl.currentArticle.id == article.id}">
+    <tr ng-repeat="article in editorCtrl.articles | orderBy:'title':false" ng-class="{info: editorCtrl.currentArticle.id == article.id}">
         <td><span class="label label-default" >{{article.id}}</span>&nbsp;<i class="fa fa-eye-slash" ng-show="editorCtrl.getArticleListHidden(article.id)">&nbsp;</i><i class="fa fa-lock" ng-show="editorCtrl.getArticleListPrivate(article.id)">&nbsp;</i><i class="fa fa-comment-o" ng-show="!editorCtrl.getArticleListComments(article.id)">&nbsp;</i></td>
         <td><span class="label label-primary" ng-show="editorCtrl.currentArticle.id == article.id">Open</span>&nbsp;{{editorCtrl.getArticleListTitle(article.id)}}</td>
         <td class="vert-align" ng-switch="article.status">
@@ -38,7 +38,6 @@
 
         </td>
         <td ng-switch="article.status">
-
             <div ng-switch-when="draft">
                 <button type="button" class="btn btn-primary btn-xs ladda-button" ng-click="editorCtrl.editArticle(article.id)"><span class="glyphicon glyphicon-pencil"></span></button>
                 <button type="button" class="btn btn-info btn-xs" ng-click="editorCtrl.postArticle(article.id)"><span class="glyphicon glyphicon-ok"></span></button>

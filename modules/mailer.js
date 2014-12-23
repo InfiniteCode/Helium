@@ -13,7 +13,6 @@ var Mailer = {
     },
 
     sendEmail: function(to, from, title, body, replyTo) {
-        // TODO Add HTML version
         ses.sendEmail( {
             Source: from,
             Destination: { ToAddresses: [to] },

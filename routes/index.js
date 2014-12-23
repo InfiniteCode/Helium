@@ -81,9 +81,8 @@ function rootResponse(req, res, urlId) {
             auth.tokenSignIn(cookieEmail, cookieToken, function(data, sk) {
                 if(data.code == 0) {
                     //Renew cookies
-                    res.cookie('email', sk.cookies.email, { maxAge: 900000, httpOnly: true });
-                    res.cookie('token', sk.cookies.token, { maxAge: 900000, httpOnly: true });
-
+                    res.cookie('email', sk.cookies.email, { maxAge: 7*24*3600000, httpOnly: true });
+                    res.cookie('token', sk.cookies.token, { maxAge: 7*24*3600000, httpOnly: true });
                     req.session.email = sk.session.email;
                     req.session.userId = sk.session.id;
                     req.session.access = sk.session.access;

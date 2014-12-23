@@ -81,6 +81,17 @@
             //TODO Loading should be logically in Blog Controller, maybe
             //add global notification that will be catched there and load content
 
+            if(pageId == "terms-of-use" || pageId == "privacy-policy") {
+                var id = pageId == "terms-of-use" ? config.terms : config.privacy;
+                pageId = null;
+                subPageId = null;
+                this.articleOn = true;
+
+                $( "#dynamicContent" ).empty();
+                $( "#dynamicContent" ).load( this.getArticleContentUrl(id));
+                return;
+            }
+
             if(!pageId && !subPageId)
                 pageId = this.pages[0].id.slug();
 
