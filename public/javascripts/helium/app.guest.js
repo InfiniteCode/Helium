@@ -83,7 +83,7 @@ String.prototype.slug = function() { // <-- removed the argument
                         return;
                     }
 
-                    $http.post('/contact/send', this.sender).
+                    $http.post('/data/contact/send', this.sender).
                         success(function(data, status, headers, config) {
                             if(data.code == 0) {
                                 cThis.modal("hide");

@@ -80,12 +80,14 @@ var Data = {
 
                 cb({
                     code: 0,
-                    title: m.get('title'),
-                    whoAndWhen: whoAndWhen,
-                    body: (body.get("cut")[0] ? body.get("body") + body.get("bodycut") : body.get("body")),
-                    tags: tags.join(", "),
-                    url: m.get("id_url"),
-                    comments: (m.get("comments")[0] ? true : false)
+                    article: {
+                        title: m.get('title'),
+                        whoAndWhen: whoAndWhen,
+                        body: (body.get("cut")[0] ? body.get("body") + body.get("bodycut") : body.get("body")),
+                        tags: tags.join(", "),
+                        url: m.get("id_url"),
+                        comments: (m.get("comments")[0] ? true : false)
+                    }
                 });
             }
         }, true);

@@ -47,7 +47,7 @@
                         return;
                     }
 
-                    $http.get("/article/cut/" + this.article.id).
+                    $http.get("/data/article/cut/" + this.article.id).
                         success(function(data, status, headers, config) {
                             if(data.code == 0) {
                                 ctrlT.article.body += data.article.bodycut;
@@ -68,7 +68,7 @@
                         return;
                     }
 
-                    $http.get("/article/" + this.article.id).
+                    $http.get("/data/article/" + this.article.id).
                         success(function(data, status, headers, config) {
                             if(data.code == 0) {
                                 ctrlT.article.body = data.article.body;
@@ -113,7 +113,7 @@
                         this.authors[id].nameLast = "Doe";
                     } else {
                         this.authors[id].fetching = true;
-                        $http.get("/author/" + id).
+                        $http.get("/data/author/" + id).
                             success(function(data, status, headers, config) {
                                 if(data.code == 0) {
                                     ctrlT.authors[id].nameFirst = data.author.nameFirst;
@@ -133,7 +133,7 @@
                     if(this.fetchingArticles) return;
                     this.fetchingArticles = true;
 
-                    $http.get("/articles/" + startingFrom + "/" + amount).
+                    $http.get("/data/articles/" + startingFrom + "/" + amount).
                         success(function(data, status, headers, config) {
                             if(data.code == 0) {
                                 if(data.articles.length == 0) return; //No more articles

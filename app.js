@@ -19,6 +19,7 @@ var routes = require('./routes/index');
 var auth = require('./routes/auth');
 var editor = require('./routes/editor');
 var files = require('./routes/files');
+var data = require('./routes/data');
 global.appRoot = path.resolve(__dirname);
 
 // view engine setup
@@ -51,6 +52,7 @@ app.use('/', routes);
 app.use('/auth', auth);
 app.use('/editor', editor);
 app.use('/files', files);
+app.use('/data', data);
 
 
 
