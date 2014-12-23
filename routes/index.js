@@ -4,6 +4,7 @@ var router = express.Router();
 var auth = require('./../modules/auth');
 var da = require('./../modules/data-access');
 var mailer = require('./../modules/mailer');
+var data = require('./../modules/data');
 
 var navbarDef = JSON.stringify([
     {
@@ -68,13 +69,12 @@ function prepareConfigurable(cb) {
 
 function rootResponse(req, res, urlId) {
     urlId = urlId ? urlId : null;
-    var loadFrontContent = urlId == null ? function(id, cb) { cb(null); } : function(id, cb) { getRawArticle(id, cb, true); };
+    var loadFrontContent = urlId == null ? function(id, cb) { cb(null); } : function(id, cb) { data.getArticle(id, cb, true); };
 
     //TODO Navbar has to be cached!
     prepareConfigurable(function(content) {
         loadFrontContent(urlId, function(article) {
 
-        if(article) article = article.article; //Extra one level up the article
         var cookieEmail = req.cookies.email;
         var cookieToken = req.cookies.token;
         if(cookieEmail && cookieToken) {
@@ -114,7 +114,7 @@ router.get('/', function(req, res) {
 
 router.get('/r/*', function(req, res) {
     //TODO Consider adding a security check here for unpublished or private articles
-    getRawArticle(req.originalUrl.substr(3), function(m) {
+    data.getArticle(req.originalUrl.substr(3), function(m) {
         if(m == null)
             res.status(400).send('Access denied.');
         else
@@ -123,136 +123,57 @@ router.get('/r/*', function(req, res) {
 });
 
 router.get('/articles/:skip/:amount', function(req, res) {
-    da.Article.findPublished(parseInt(req.params.skip), parseInt(req.params.amount), function(d) {
-        var articles = [];
-        if(d != null) for(var i = 0; i < d.models.length; ++i)
-            articles.push(d.models[i].toPublicFormat());
-
-        res.json({
-            code: 0,
-            articles: articles
-        });
+    data.getArticles(parseInt(req.params.skip), parseInt(req.params.amount), function(d){
+        res.json(d);
     }, req.session ? req.session.userId : undefined);
 });
 
 router.get('/article/cut/:id', function(req, res) {
-    //TODO Consider adding a security check here for unpublished or private articles
-    da.ArticleBody.findByArticle(parseInt(req.params.id), function(m) {
-        if(m == null) {
-            res.status(400).send('Access denied.');
-        } else {
-            res.json({
-                code: 0,
-                article: {
-                    bodycut: m.get("bodycut")
-                }
-            });
-        }
-    });
+    data.getArticleCut(parseInt(req.params.id), function(d){
+        if(d.code == 0)
+            res.json(d);
+        else
+            res.status(res.status).send(res.message);
+    }, req.session ? req.session.userId : undefined);
 });
-
-function getRawArticle(id, cb, idUrl) {
-    idUrl = idUrl ? true : false;
-    var findCall = idUrl ? da.Article.findByUrlId : da.Article.findById;
-
-    findCall(id, function(m) {
-        if(m == null) {
-            cb(null);
-        } else {
-            var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            var publishedOn = m.get('published_on');
-
-            var whoAndWhen = "On " + months[publishedOn.getMonth()] + " " + publishedOn.getDate() + ", " + publishedOn.getFullYear() +
-                " by " + m.relations.author.get("name_first") + " " + m.relations.author.get("name_last") +
-                " at " + publishedOn.getHours() + ":" + ("0" + publishedOn.getMinutes()).slice(-2);
-
-            var tags = [];
-            for(var i = 0, len = m.relations.uniTags.models.length; i < len; ++i)
-                tags.push(m.relations.uniTags.models[i].get("name"));
-
-            var body = m.relations.body.models[0];
-
-            cb({
-            article: {
-                title: m.get('title'),
-                whoAndWhen: whoAndWhen,
-                body: (body.get("cut")[0] ? body.get("body") + body.get("bodycut") : body.get("body")),
-                tags: tags.join(", "),
-                url: m.get("id_url"),
-                comments: (m.get("comments")[0] ? true : false)
-            }
-        });
-    }
-    }, true);
-}
 
 router.get('/raw/article-body/:id', function(req, res) {
     //TODO Consider adding a security check here for unpublished or private articles
-    da.ArticleBody.findByArticle(req.params.id, function(m) {
-        if(m == null)
-            res.status(400).send('Access denied.');
+    data.getArticleBody(parseInt(req.params.id), function(d) {
+        if(d.code == 0)
+            res.send(d.body);
         else
-            res.send(m.get("cut")[0] ? m.get("body") + m.get("bodycut") : m.get("body"));
-    });
+            res.status(d.status).send(d.message);
+    }, req.session ? req.session.userId : undefined);
 });
 
 router.get('/raw/article/:id', function(req, res) {
     //TODO Consider adding a security check here for unpublished or private articles
-    getRawArticle(req.params.id, function(m) {
-        if(m == null)
-            res.status(400).send('Access denied.');
+    data.getArticle(parseInt(req.params.id), function(m) {
+        if(m.code != 0)
+            res.status(m.status).send(m.message);
         else
             res.render('article', m);
     });
 });
 
 router.get('/article/:id', function(req, res) {
-    var articleId = parseInt(req.params.id);
-    //TODO Consider adding a security check here for unpublished or private articles
-    da.ArticleBody.findByArticle(articleId, function(m) {
-        da.UserArticleTag.findByArticle(articleId, function(mTags) {
-            if(m == null || mTags == null) {
-                res.status(400).send('Access denied.');
-            } else {
-                var tags = [];
-                for(var i = 0, len = mTags.models.length; i < len; ++i)
-                    tags.push(mTags.models[i].relations.uni_tag.get('name'));
-
-                res.json({
-                    code: 0,
-                    article: {
-                        body: m.get("body"),
-                        isCut: m.get("cut")[0],
-                        tags: {
-                            original: tags
-                        }
-                    }
-                });
-            }
-        }, true);
+    data.getArticleBase(parseInt(req.params.id), function(d) {
+        if(d.code != 0)
+            res.status(d.status).send(d.message);
+        else
+            res.json(d);
     });
 });
 
 router.get('/author/:id', function(req, res) {
-    //TODO This might be a security breach, consider embedding this data into articles
-    //if not used anywhere else. However exposed data is ID and Name only here.
-    da.User.findById(req.params.id, function(m){
-        if(m == null) {
-            res.status(400).send('Access denied.');
-        } else {
-            res.json({
-                code: 0,
-                author: {
-                    nameFirst: m.get("name_first"),
-                    nameLast: m.get("name_last")
-                }
-            });
-        }
+    data.getArticleBase(parseInt(req.params.id), function(d) {
+        if(d.code != 0)
+            res.status(d.status).send(d.message);
+        else
+            res.json(d);
     });
 });
-
-
-
 
 router.post('/contact/send', function(req, res) {
     if(req.body.email == "" || req.body.email.length < 3 || req.body.email.indexOf("@") < 0) {
