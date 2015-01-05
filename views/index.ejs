@@ -58,12 +58,22 @@
 
     <% include front/navbar.ejs %>
 
-    <hel-body></hel-body>
+    <% if(article) { %>
+        <div class="container">
+            <div class="row" >
+                <div id="dynamicContent">
+                    <% include article.ejs %>
+                </div>
+            </div>
+        </div>
+    <% } else { %>
+        <hel-blog ng-show="blogCtrl.navbarService.getCurrentPageType() == 0"></hel-blog>
+    <% } %>
 
     <% if(typeof loginData != 'undefined') {%>
-        <hel-editor ng-show="bodyCtrl.navbarService.editorOn"></hel-editor>
-        <hel-files ng-show="bodyCtrl.navbarService.filesOn"></hel-files>
-        <hel-profile ng-show="bodyCtrl.navbarService.profileOn"></hel-profile>
+        <hel-editor ng-show="editorCtrl.navbarService.editorOn"></hel-editor>
+        <hel-files ng-show="filesCtrl.navbarService.filesOn"></hel-files>
+        <hel-profile ng-show="profileCtrl.navbarService.profileOn"></hel-profile>
     <% } %>
 
     <% include front/footer.ejs %>

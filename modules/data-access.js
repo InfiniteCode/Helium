@@ -218,6 +218,20 @@ var Article = bookshelf.Model.extend(
                 });
         },
 
+        urlsFromIds: function(ids, callback) {
+            callback = callback ? callback : function() {};
+            new Article()
+                .query(function(qb) {
+                    qb.where("id", "in", ids)
+                })
+                .fetchAll()
+                .then(function(model) {
+                    callback(model == null ? null : model.models);
+                }).catch(function(err) {
+                    callback(null);
+                })
+        },
+
         findByAuthor: function(author, callback){
             callback = callback ? callback : function() {};
             Article.where({'author': author})

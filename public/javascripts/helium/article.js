@@ -86,7 +86,7 @@
         };
     }]);
 
-    articleModule.directive("helBlog", ["$http", "$timeout", function($http, $timeout){
+    articleModule.directive("helBlog", ["$http", "$timeout", "hel-navbar-service", "hel-user-service", function($http, $timeout, navbarService, userService){
         return {
             restrict: "E",
             templateUrl: "/templates/front/blog.html",
@@ -96,6 +96,8 @@
                 this.authors = {};
                 this.fetchingArticles = false;
                 this.fetchAmount = 10;
+                this.navbarService = navbarService;
+                this.userService = userService;
 
                 this.fetchAuthor = function(id) {
                     if(typeof this.authors[id] != "undefined" && (this.authors[id].complete == true || this.authors[id].fetching == true)) return;

@@ -2,14 +2,15 @@
 (function() {
     var profileModule = angular.module("hel-profile", ['hel-services']);
 
-    profileModule.directive("helProfile", ["$http", "$timeout", "hel-user-service",
-        function($http, $timeout, userService){
+    profileModule.directive("helProfile", ["$http", "$timeout", "hel-user-service", "hel-navbar-service",
+        function($http, $timeout, userService, navbarService){
             return {
                 restrict: "E",
                 templateUrl: "/templates/profile.html",
                 controller: function($scope){
                     var ctrlT = this;
                     this.userService = userService;
+                    this.navbarService = navbarService;
                     this.config = {
                         navbar: "",
                         general: {

@@ -51,12 +51,13 @@ function prepareConfigurable(cb) {
     da.Config.getConfigs(function(configs) {
         var cfg = {
             navbar: navbarDef,
-            about: generalDef.about,
             title: generalDef.title,
-            terms: generalDef.terms,
-            privacy: generalDef.privacy,
             disqus: generalDef.disqus,
-            tracking: generalDef.tracking
+            tracking: generalDef.tracking,
+            //Those also need URLs to create proper slug
+            about: generalDef.about,
+            terms: generalDef.terms,
+            privacy: generalDef.privacy
         };
 
         if(configs == null) {
@@ -65,16 +66,35 @@ function prepareConfigurable(cb) {
             for(var i = 0, len = configs.length; i < len; ++i)
             switch(configs[i].id) {
                 case "navbar": cfg.navbar = JSON.parse(configs[i].get("data")); break;
-                case "about": cfg.about = configs[i].get("data"); break;
+                case "about": cfg.about = parseInt(configs[i].get("data")); break;
                 case "title": cfg.title = configs[i].get("data"); break;
-                case "terms": cfg.terms = configs[i].get("data"); break;
-                case "privacy": cfg.privacy = configs[i].get("data"); break;
+                case "terms": cfg.terms = parseInt(configs[i].get("data")); break;
+                case "privacy": cfg.privacy = parseInt(configs[i].get("data")); break;
                 case "disqus": cfg.disqus = configs[i].get("data"); break;
                 case "tracking": cfg.tracking = configs[i].get("data"); break;
             }
         }
 
-        cb(cfg);
+        var embeddedIds = [cfg.about, cfg.terms, cfg.privacy];
+        for(var ni = 0, len = cfg.navbar.length; ni < len; ++ni) {
+            if(cfg.navbar[ni].type == 1) embeddedIds.push(cfg.navbar[ni].article);
+            else if (cfg.navbar[ni].type == 2) {
+                for(var nis = 0, lens = cfg.navbar[ni].entries.length; nis < lens; ++nis)
+                    embeddedIds.push(cfg.navbar[ni].entries[nis].article);
+            }
+        }
+
+        //Now grab URLs for IDs
+        da.Article.urlsFromIds(embeddedIds, function(urls) {
+            if(urls != null) {
+                cfg.urls = {};
+                for(var i = 0, len = urls.length; i < len; ++i) {
+                    var idUrl = urls[i].attributes["id_url"];
+                    cfg.urls[urls[i].id.toString()] = idUrl;
+                }
+            }
+            cb(cfg);
+        });
     });
 }
 
@@ -83,9 +103,11 @@ function rootResponse(req, res, urlId) {
     var loadFrontContent = urlId == null ? function(id, cb) { cb(null); } : function(id, cb) { data.getArticle(id, cb, true); };
 
     //TODO Navbar has to be cached!
-    prepareConfigurable(function(content) {
+    prepareConfigurable(function(cfg) {
         loadFrontContent(urlId, function(article) {
+        if(article) article = article.article; //Remove nesting
 
+        var currentPage = null;
         var cookieEmail = req.cookies.email;
         var cookieToken = req.cookies.token;
         if(cookieEmail && cookieToken) {
@@ -97,13 +119,13 @@ function rootResponse(req, res, urlId) {
                     req.session.email = sk.session.email;
                     req.session.userId = sk.session.id;
                     req.session.access = sk.session.access;
-                    res.render('index', { loginData: JSON.stringify(data), config: content });
+                    res.render('index', { loginData: JSON.stringify(data), config: cfg, article: article, currentPage: currentPage });
                 } else {
                     //Erase invalid cookies
                     res.clearCookie('email');
                     res.clearCookie('token');
                     //TODO We might want to check here response code and delete also tokens from DB to prevent garbage
-                    res.render('index', { config: content });
+                    res.render('index', { config: cfg, article: article, currentPage: currentPage });
                 }
             });
         } else {
@@ -112,7 +134,7 @@ function rootResponse(req, res, urlId) {
                 res.clearCookie('email');
                 res.clearCookie('token');
             }
-            res.render('index', { config: content });
+            res.render('index', { config: cfg, article: article, currentPage: currentPage });
         }
 
         }); //loadFrontContent
@@ -123,17 +145,7 @@ router.get('/', function(req, res) {
     rootResponse(req, res);
 });
 
-router.get('/r/*', function(req, res) {
-    //TODO Consider adding a security check here for unpublished or private articles
-    data.getArticle(req.originalUrl.substr(3), function(m) {
-        if(m == null)
-            res.status(400).send('Access denied.');
-        else
-            res.render('article', m);
-    }, true);
-});
-
-router.get('/raw/article/:id', function(req, res) {
+router.get('/partial/article/:id', function(req, res) {
     //TODO Consider adding a security check here for unpublished or private articles
     data.getArticle(parseInt(req.params.id), function(m) {
         if(m.code != 0)
@@ -142,5 +154,11 @@ router.get('/raw/article/:id', function(req, res) {
             res.render('article', m);
     });
 });
+
+router.get('/*', function(req, res) {
+    rootResponse(req, res, req.originalUrl.substr(1));
+});
+
+
 
 module.exports = router;

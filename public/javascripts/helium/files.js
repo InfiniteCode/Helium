@@ -267,14 +267,15 @@
         };
     }]);
 
-    filesModule.directive("helFiles", ["$http", "$timeout", "hel-user-service", "hel-files-service",
-    function($http, $timeout, userService, filesService){
+    filesModule.directive("helFiles", ["$http", "$timeout", "hel-user-service", "hel-files-service", "hel-navbar-service",
+    function($http, $timeout, userService, filesService, navbarService){
         return {
             restrict: "E",
             templateUrl: "/templates/files/files.html",
             controller: function($scope){
                 var ctrlT = this;
                 this.userService = userService;
+                this.navbarService = navbarService;
                 this.filesService = filesService;
                 this.currentFolderPath = [];
                 this.editMode = false;

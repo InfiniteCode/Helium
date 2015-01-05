@@ -65,13 +65,14 @@
             };
         });
 
-    editorModule.directive("helEditor", ["$http", "$timeout", "hel-user-service", function($http, $timeout, userService){
+    editorModule.directive("helEditor", ["$http", "$timeout", "hel-user-service", "hel-navbar-service", function($http, $timeout, userService, navbarService){
         return {
             restrict: "E",
             templateUrl: "/templates/article/editor.html",
             controller: function($scope){
                 var ctrlT = this;
                 this.userService = userService;
+                this.navbarService = navbarService;
                 this.tabs = [
                     {
                         id: 0,

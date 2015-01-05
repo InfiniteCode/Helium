@@ -32,12 +32,6 @@ String.prototype.slug = function() { // <-- removed the argument
 (function() {
     var app = angular.module("hel-app", ["hel-navbar", "hel-article", "hel-editor", "hel-services", "hel-files", "ngTagsInput", "toggle-switch", "hel-profile"]);
 
-    app.run(function ($rootScope) {
-        $rootScope.$on('$locationChangeSuccess', function () {
-            //console.log('$locationChangeSuccess changed!', new Date());
-        });
-    });
-
     app.directive("helContactModal", ["$http", function(){
         return {
             restrict: "E",
@@ -93,18 +87,6 @@ String.prototype.slug = function() { // <-- removed the argument
                 };
             },
             controllerAs: "contactCtrl"
-        };
-    }]);
-
-    app.directive("helBody", ["hel-navbar-service", "hel-user-service", function(navbarService, userService){
-        return {
-            restrict: "E",
-            templateUrl: "/templates/front/body.html",
-            controller: function(){
-                this.navbarService = navbarService;
-                this.userService = userService;
-            },
-            controllerAs: "bodyCtrl"
         };
     }]);
 })();

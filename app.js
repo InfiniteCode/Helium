@@ -48,12 +48,11 @@ if (app.get('env') !== 'development') {
     });
 }
 
-app.use('/', routes);
+app.use('/data', data);
 app.use('/auth', auth);
 app.use('/editor', editor);
 app.use('/files', files);
-app.use('/data', data);
-
+app.use('/', routes);
 
 
 // catch 404 and forward to error handler
