@@ -38,20 +38,6 @@ String.prototype.slug = function() { // <-- removed the argument
         });
     });
 
-    app.directive("helFooter", function(){
-        return {
-            restrict: "E",
-            templateUrl: "/templates/front/footer.html"
-        };
-    });
-
-    app.directive("helAboutModal", function(){
-        return {
-            restrict: "E",
-            templateUrl: "/templates/modals/about.html"
-        };
-    });
-
     app.directive("helContactModal", ["$http", function(){
         return {
             restrict: "E",

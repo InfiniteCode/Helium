@@ -6,6 +6,17 @@ var da = require('./../modules/data-access');
 var mailer = require('./../modules/mailer');
 var data = require('./../modules/data');
 
+String.prototype.slug = function() { // <-- removed the argument
+    var str = this; // <-- added this statement
+
+    str = str.replace(/^\s+|\s+$/g, ''); // trim
+    str = str.toLowerCase();
+    str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+        .replace(/\s+/g, '-') // collapse whitespace and replace by -
+        .replace(/-+/g, '-'); // collapse dashes
+    return str;
+};
+
 var navbarDef = JSON.stringify([
     {
         id: "Blog",
@@ -53,7 +64,7 @@ function prepareConfigurable(cb) {
         } else {
             for(var i = 0, len = configs.length; i < len; ++i)
             switch(configs[i].id) {
-                case "navbar": cfg.navbar = configs[i].get("data"); break;
+                case "navbar": cfg.navbar = JSON.parse(configs[i].get("data")); break;
                 case "about": cfg.about = configs[i].get("data"); break;
                 case "title": cfg.title = configs[i].get("data"); break;
                 case "terms": cfg.terms = configs[i].get("data"); break;
