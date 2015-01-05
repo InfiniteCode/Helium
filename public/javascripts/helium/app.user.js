@@ -30,7 +30,7 @@ String.prototype.slug = function() { // <-- removed the argument
 
 //Main application
 (function() {
-    var app = angular.module("hel-app", ["hel-navbar", "hel-article", "hel-editor", "hel-services", "hel-files", "ngTagsInput", "toggle-switch", "hel-profile"]);
+    var app = angular.module("hel-app", ["hel-navbar", "hel-editor", "hel-services", "hel-files", "ngTagsInput", "toggle-switch", "hel-profile"]);
 
     app.directive("helContactModal", ["$http", function(){
         return {

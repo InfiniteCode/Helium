@@ -100,12 +100,26 @@ function prepareConfigurable(cb) {
 
 function rootResponse(req, res, urlId) {
     urlId = urlId ? urlId : null;
-    var loadFrontContent = urlId == null ? function(id, cb) { cb(null); } : function(id, cb) { data.getArticle(id, cb, true); };
+    var loadFrontContent = urlId == null ?
+        function(id, cb) {
+            //We need to fetch 10 most recent articles
+            data.getArticles(0, 10, cb, req.session ? req.session.userId : undefined, true);
+        } :
+        function(id, cb) {
+            data.getArticle(id, cb, true);
+        };
 
     //TODO Navbar has to be cached!
     prepareConfigurable(function(cfg) {
-        loadFrontContent(urlId, function(article) {
-        if(article) article = article.article; //Remove nesting
+        loadFrontContent(urlId, function(contentData) {
+        var article = null, articles = null;
+        if(contentData) {
+            //Remove nesting
+            if(contentData.article)
+                article = contentData.article;
+            if(contentData.articles)
+                articles = contentData.articles;
+        }
 
         var currentPage = null;
         var cookieEmail = req.cookies.email;
@@ -119,13 +133,13 @@ function rootResponse(req, res, urlId) {
                     req.session.email = sk.session.email;
                     req.session.userId = sk.session.id;
                     req.session.access = sk.session.access;
-                    res.render('index', { loginData: JSON.stringify(data), config: cfg, article: article, currentPage: currentPage });
+                    res.render('index', { loginData: JSON.stringify(data), config: cfg, article: article, articles: articles, currentPage: currentPage });
                 } else {
                     //Erase invalid cookies
                     res.clearCookie('email');
                     res.clearCookie('token');
                     //TODO We might want to check here response code and delete also tokens from DB to prevent garbage
-                    res.render('index', { config: cfg, article: article, currentPage: currentPage });
+                    res.render('index', { config: cfg, article: article, articles: articles, currentPage: currentPage });
                 }
             });
         } else {
@@ -134,7 +148,7 @@ function rootResponse(req, res, urlId) {
                 res.clearCookie('email');
                 res.clearCookie('token');
             }
-            res.render('index', { config: cfg, article: article, currentPage: currentPage });
+            res.render('index', { config: cfg, article: article, articles: articles, currentPage: currentPage });
         }
 
         }); //loadFrontContent

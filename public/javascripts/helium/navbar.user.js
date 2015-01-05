@@ -104,17 +104,20 @@
 
                 this.write = function() {
                     navbarService.showEditor(true);
+                    //TODO Consider making this more user friendly
                     $("#dynamicContent").empty();
                 };
 
                 this.files = function() {
                     navbarService.showFiles(true);
+                    //TODO Consider making this more user friendly
                     $("#dynamicContent").empty();
                 };
 
                 this.profile = function() {
                     navbarService.showProfile(true);
                     $scope.$emit('populateProfileDetails');
+                    //TODO Consider making this more user friendly
                     $("#dynamicContent").empty();
                 }
             },

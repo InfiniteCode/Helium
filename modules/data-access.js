@@ -4,6 +4,14 @@ var nconf = require("nconf");
 var knex = require("knex")({ client: "mysql", connection: nconf.get("db") });
 var bookshelf = require('bookshelf')(knex);
 
+var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+function genWhoAndWhen(date, nameFirst, nameLast) {
+    return "On " + months[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear() +
+        " by " + nameFirst + " " + nameLast +
+        " at " + date.getHours() + ":" + ("0" + date.getMinutes()).slice(-2);
+}
+
 var Config = bookshelf.Model.extend(
     {
         tableName: 'config'
@@ -178,8 +186,13 @@ var Article = bookshelf.Model.extend(
                 };
         },
 
+        toWhoAndWhen: function() {
+            return genWhoAndWhen(this.get('published_on'), this.relations.author.attributes["name_first"],
+                this.relations.author.attributes["name_last"]);
+        },
+
         toPublicFormat: function() {
-            return {
+            var res =  {
                 id: this.id,
                 author: this.get('author'),
                 url: this.get('id_url'),
@@ -187,6 +200,31 @@ var Article = bookshelf.Model.extend(
                 language: this.get('language'),
                 publishedOn: this.get('published_on')
             };
+
+            if(this.relations.body) {
+                var m = this.relations.body.models[0];
+                res.body = m.attributes["body"];
+                res.cut = m.attributes["cut"][0] ? true : false;
+                res.bodyCut = m.attributes["bodycut"];
+            }
+
+            if(this.relations.author) {
+                res.author = {};
+                res.author.nameFirst = this.relations.author.attributes["name_first"];
+                res.author.nameLast = this.relations.author.attributes["name_last"];
+
+                res.whoAndWhen = this.toWhoAndWhen();
+            }
+
+            if(this.relations.uniTags) {
+                var tags = [];
+                for(var i = 0, len = this.relations.uniTags.models.length; i < len; ++i)
+                    tags.push(this.relations.uniTags.models[i].get("name"));
+
+                res.tags = tags;
+            }
+
+            return res;
         }
     }, {
         findByUrlId: function(urlid, callback, full) {
@@ -253,15 +291,17 @@ var Article = bookshelf.Model.extend(
                 });
         },
 
-        findPublished: function(skip, amount, callback, userId) {
+        findPublished: function(skip, amount, callback, userId, full) {
             //TODO Include userId into query for private articles by this user
             //TODO It is better to compare ID rather than do Skip in a query
             callback = callback ? callback : function() {};
+            var related = full ? ['author', 'body', 'uniTags'] : [];
+
             new Article()
                 .query(function(qb) {
                     qb.where('hidden', false).whereNotNull('published_on').limit(amount).offset(skip).orderBy('published_on','desc')
                 })
-                .fetchAll()
+                .fetchAll({withRelated: related})
                 .then(function(model) {
                     callback(model);
                 })

@@ -58,17 +58,34 @@
 
     <% include front/navbar.ejs %>
 
-    <% if(article) { %>
-        <div class="container">
-            <div class="row" >
-                <div id="dynamicContent">
+    <div class="container">
+        <div class="row" >
+            <div id="dynamicContent">
+                <% if(article) { %>
                     <% include article.ejs %>
-                </div>
+                <% } else if(articles) { %>
+                    <% for(var i = 0, len = articles.length; i < len; ++i) { %>
+                    <div class="bs-docs-section">
+                        <h1><a href="/<%= articles[i].url %>" class="gray-link"><%= articles[i].title %></a></h1>
+                        <h6><small><%= articles[i].whoAndWhen %></small></h6>
+                        <div><%- articles[i].body %></div>
+
+                        <% if(articles[i].cut) { %>
+                            <div id="<%= articles[i].id + '-cut' %>">
+                                <a href onclick="$('#<%= articles[i].id + "-cut" %>').load('/data/raw/article-bodycut/<%= articles[i].id %>');" >
+                                    <h5><span class="label label-default"><i class="glyphicon glyphicon-book"></i> Read more...</span></h5>
+                                </a>
+                            </div>
+                        <% } %>
+
+                        <h6 class="text-center"><small><%= articles[i].tags.join(", ") %></small></h6>
+                        <hr class="bs-docs-separator">
+                    </div>
+                    <% } %>
+                <% } %>
             </div>
         </div>
-    <% } else { %>
-        <hel-blog ng-show="blogCtrl.navbarService.getCurrentPageType() == 0"></hel-blog>
-    <% } %>
+    </div>
 
     <% if(typeof loginData != 'undefined') {%>
         <hel-editor ng-show="editorCtrl.navbarService.editorOn"></hel-editor>
@@ -103,12 +120,10 @@
         <script src="/javascripts/helium/navbar.user.js"></script>
         <script src="/javascripts/helium/profile.js"></script>
         <script src="/javascripts/helium/files.js"></script>
-        <script src="/javascripts/helium/article.js"></script>
         <script src="/javascripts/helium/editor.js"></script>
         <script src="/javascripts/helium/app.user.js"></script>
     <% } else { %>
         <script src="/javascripts/helium/services.js"></script>
-        <script src="/javascripts/helium/article.js"></script>
         <script src="/javascripts/helium/navbar.guest.js"></script>
         <script src="/javascripts/helium/app.guest.js"></script>
     <% } %>

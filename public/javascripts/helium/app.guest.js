@@ -19,7 +19,7 @@ $.fn.serializeObject = function()
 
 //Main application
 (function() {
-    var app = angular.module("hel-app", ["hel-navbar", "hel-article", "hel-services"]);
+    var app = angular.module("hel-app", ["hel-navbar", "hel-services"]);
 
     app.directive("helContactModal", ["$http", function(){
         return {

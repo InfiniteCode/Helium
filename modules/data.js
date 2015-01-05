@@ -2,7 +2,7 @@
 var da = require("./data-access");
 
 var Data = {
-    getArticles: function(skip, amount, cb, userId) {
+    getArticles: function(skip, amount, cb, userId, full) {
         //TODO Add userId support
         da.Article.findPublished(skip, amount, function(d) {
             var articles = [];
@@ -12,7 +12,7 @@ var Data = {
             cb({code: 0,
                 articles: articles
             });
-        }, userId);
+        }, userId, full);
     },
 
     getArticleBody: function(id, cb, userId) {
@@ -65,13 +65,6 @@ var Data = {
                     message: "Not found."
                 });
             } else {
-                var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                var publishedOn = m.get('published_on');
-
-                var whoAndWhen = "On " + months[publishedOn.getMonth()] + " " + publishedOn.getDate() + ", " + publishedOn.getFullYear() +
-                    " by " + m.relations.author.get("name_first") + " " + m.relations.author.get("name_last") +
-                    " at " + publishedOn.getHours() + ":" + ("0" + publishedOn.getMinutes()).slice(-2);
-
                 var tags = [];
                 for(var i = 0, len = m.relations.uniTags.models.length; i < len; ++i)
                     tags.push(m.relations.uniTags.models[i].get("name"));
@@ -82,7 +75,7 @@ var Data = {
                     code: 0,
                     article: {
                         title: m.get('title'),
-                        whoAndWhen: whoAndWhen,
+                        whoAndWhen: m.toWhoAndWhen(),
                         body: (body.get("cut")[0] ? body.get("body") + body.get("bodycut") : body.get("body")),
                         tags: tags.join(", "),
                         url: m.get("id_url"),
