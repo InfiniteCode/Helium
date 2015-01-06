@@ -70,6 +70,7 @@ var Data = {
                     tags.push(m.relations.uniTags.models[i].get("name"));
 
                 var body = m.relations.body.models[0];
+                var author = m.relations.author.attributes["name_first"] + " " + m.relations.author.attributes["name_last"];
 
                 cb({
                     code: 0,
@@ -79,9 +80,10 @@ var Data = {
                         body: (body.get("cut")[0] ? body.get("body") + body.get("bodycut") : body.get("body")),
                         tags: tags.join(", "),
                         url: m.get("id_url"),
-                        comments: (m.get("comments")[0] ? true : false)
+                        comments: (m.get("comments")[0] ? true : false),
+                        author: author
                     }
-                });
+                }, m.id, m);
             }
         }, true);
     },

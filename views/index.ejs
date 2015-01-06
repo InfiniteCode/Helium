@@ -4,7 +4,13 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><%= config.title %></title>
+    <% if(article) { %>
+        <meta name="description" content="<%= article.title %>">
+        <meta name="keywords" content="<%= article.tags %>">
+        <meta name="author" content="<%= article.author %>">
+    <% } %>
+
+    <title><% if(article) { %><%= article.title %>. <% } %><%= config.title %></title>
 
     <link href="/stylesheets/bootstrap.css" rel="stylesheet">
     <link href="/stylesheets/font-awesome.min.css" rel="stylesheet">

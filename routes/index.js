@@ -111,7 +111,7 @@ function rootResponse(req, res, urlId) {
 
     //TODO Navbar has to be cached!
     prepareConfigurable(function(cfg) {
-        loadFrontContent(urlId, function(contentData) {
+        loadFrontContent(urlId, function(contentData, contentId, contentOriginal) {
         var article = null, articles = null;
         if(contentData) {
             //Remove nesting
@@ -121,7 +121,7 @@ function rootResponse(req, res, urlId) {
                 articles = contentData.articles;
         }
 
-        var currentPage = null;
+        var currentPage = contentId ? contentId : null;
         var cookieEmail = req.cookies.email;
         var cookieToken = req.cookies.token;
         if(cookieEmail && cookieToken) {
@@ -133,13 +133,13 @@ function rootResponse(req, res, urlId) {
                     req.session.email = sk.session.email;
                     req.session.userId = sk.session.id;
                     req.session.access = sk.session.access;
-                    res.render('index', { loginData: JSON.stringify(data), config: cfg, article: article, articles: articles, currentPage: currentPage });
+                    res.render('index', { loginData: JSON.stringify(data), config: cfg, article: article, articles: articles, currentPage: currentPage, contentOriginal: contentOriginal });
                 } else {
                     //Erase invalid cookies
                     res.clearCookie('email');
                     res.clearCookie('token');
                     //TODO We might want to check here response code and delete also tokens from DB to prevent garbage
-                    res.render('index', { config: cfg, article: article, articles: articles, currentPage: currentPage });
+                    res.render('index', { config: cfg, article: article, articles: articles, currentPage: currentPage, contentOriginal: contentOriginal });
                 }
             });
         } else {
@@ -148,7 +148,7 @@ function rootResponse(req, res, urlId) {
                 res.clearCookie('email');
                 res.clearCookie('token');
             }
-            res.render('index', { config: cfg, article: article, articles: articles, currentPage: currentPage });
+            res.render('index', { config: cfg, article: article, articles: articles, currentPage: currentPage, contentOriginal: contentOriginal });
         }
 
         }); //loadFrontContent
