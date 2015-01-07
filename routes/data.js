@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 var auth = require('./../modules/auth');
 var data = require('./../modules/data');
+var mailer = require('./../modules/mailer');
 
 router.get('/articles/:skip/:amount', function(req, res) {
     data.getArticles(parseInt(req.params.skip), parseInt(req.params.amount), function(d){
