@@ -98,12 +98,16 @@ function prepareConfigurable(cb) {
     });
 }
 
-function rootResponse(req, res, urlId) {
+function rootResponse(req, res, urlId, skip) {
+    var skipAmount = skip ? skip : 0;
+    var fetchAmount = 10;
+    var fetchedAmount = fetchAmount;
+
     urlId = urlId ? urlId : null;
     var loadFrontContent = urlId == null ?
         function(id, cb) {
-            //We need to fetch 10 most recent articles
-            data.getArticles(0, 10, cb, req.session ? req.session.userId : undefined, true);
+            //We need to fetch articlesAmount most recent articles
+            data.getArticles(skipAmount, fetchAmount + 1, cb, req.session ? req.session.userId : undefined, true);
         } :
         function(id, cb) {
             data.getArticle(id, cb, true);
@@ -117,13 +121,27 @@ function rootResponse(req, res, urlId) {
             //Remove nesting
             if(contentData.article)
                 article = contentData.article;
-            if(contentData.articles)
+            if(contentData.articles) {
                 articles = contentData.articles;
+                fetchedAmount = articles.length;
+            }
         }
 
         var currentPage = contentId ? contentId : null;
         var cookieEmail = req.cookies.email;
         var cookieToken = req.cookies.token;
+
+        var templateParams = {
+            config: cfg,
+            article: article,
+            articles: articles,
+            currentPage: currentPage,
+            contentOriginal: contentOriginal,
+            skipAmount: skipAmount,
+            fetchAmount: fetchAmount,
+            fetchedAmount: fetchedAmount
+        };
+
         if(cookieEmail && cookieToken) {
             auth.tokenSignIn(cookieEmail, cookieToken, function(data, sk) {
                 if(data.code == 0) {
@@ -133,13 +151,14 @@ function rootResponse(req, res, urlId) {
                     req.session.email = sk.session.email;
                     req.session.userId = sk.session.id;
                     req.session.access = sk.session.access;
-                    res.render('index', { loginData: JSON.stringify(data), config: cfg, article: article, articles: articles, currentPage: currentPage, contentOriginal: contentOriginal });
+                    templateParams.loginData = JSON.stringify(data);
+                    res.render('index', templateParams);
                 } else {
                     //Erase invalid cookies
                     res.clearCookie('email');
                     res.clearCookie('token');
                     //TODO We might want to check here response code and delete also tokens from DB to prevent garbage
-                    res.render('index', { config: cfg, article: article, articles: articles, currentPage: currentPage, contentOriginal: contentOriginal });
+                    res.render('index', templateParams);
                 }
             });
         } else {
@@ -148,7 +167,7 @@ function rootResponse(req, res, urlId) {
                 res.clearCookie('email');
                 res.clearCookie('token');
             }
-            res.render('index', { config: cfg, article: article, articles: articles, currentPage: currentPage, contentOriginal: contentOriginal });
+            res.render('index', templateParams);
         }
 
         }); //loadFrontContent
@@ -157,6 +176,10 @@ function rootResponse(req, res, urlId) {
 
 router.get('/', function(req, res) {
     rootResponse(req, res);
+});
+
+router.get('/:skipAmount', function(req, res) {
+    rootResponse(req, res, null, parseInt(req.params.skipAmount));
 });
 
 router.get('/partial/article/:id', function(req, res) {

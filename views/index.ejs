@@ -70,7 +70,7 @@
                 <% if(article) { %>
                     <% include article.ejs %>
                 <% } else if(articles) { %>
-                    <% for(var i = 0, len = articles.length; i < len; ++i) { %>
+                    <% for(var i = 0, len = articles.length; i < len && i < fetchAmount; ++i) { %>
                     <div class="bs-docs-section">
                         <h1><a href="/<%= articles[i].url %>" class="gray-link"><%= articles[i].title %></a></h1>
                         <h6><small><%= articles[i].whoAndWhen %></small></h6>
@@ -90,6 +90,10 @@
                     <% } %>
                 <% } %>
             </div>
+        </div>
+
+        <div class="row">
+            <% include front/paginator.ejs %>
         </div>
     </div>
 
