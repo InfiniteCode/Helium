@@ -178,7 +178,7 @@ router.get('/', function(req, res) {
     rootResponse(req, res);
 });
 
-router.get('/:skipAmount', function(req, res) {
+router.get('/page/:skipAmount', function(req, res) {
     rootResponse(req, res, null, parseInt(req.params.skipAmount));
 });
 
