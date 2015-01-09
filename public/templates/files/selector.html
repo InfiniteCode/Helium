@@ -21,7 +21,7 @@
         <li role="presentation" class="dropdown-header">Files</li>
         <li role="presentation" ng-repeat="file in filesSelectorCtrl.currentFolder().files" ng-click="filesSelectorCtrl.selectFile(file)">
             <a role="menuitem" tabindex="-1" href="#">
-                <img class="img-responsive dropdown-preview" ng-src="{{file.thumbUrl}}" alt="">{{file.name}}
+                <img class="img-responsive dropdown-preview" ng-src="{{(file.thumbUrl ? file.thumbUrl : file.url)}}" alt="">{{file.name}}
             </a>
         </li>
     </ul>
