@@ -51,12 +51,12 @@ router.get('/articles', function(req, res) {
     });
 });
 
-router.get('/article/publish/:id', function(req, res) {
+function publishArticle(req, res, id, bringUp) {
     if(!req.session || !req.session.userId) { res.status(400).send("Access denied."); return; }
 
     var now = new Date();
     var userId = req.session.userId;
-    var artId = parseInt(req.params.id);
+    var artId = id;
     da.Article.findById(artId, function(m) {
         if(m == null || m.get('author') != userId) {
             res.status(400).send("Access denied.");
@@ -73,7 +73,8 @@ router.get('/article/publish/:id', function(req, res) {
         m.attributes['title'] = artModTitle;
         m.attributes['id_url'] = artModUrl;
         m.attributes['modified'] = false;
-        m.attributes['published_on'] = now;
+        if(bringUp || m.get('published_on') == null)
+            m.attributes['published_on'] = now;
         m.attributes['private'] = artPrivate;
         m.attributes['comments'] = artComments;
         m.attributes['hidden'] = artHidden;
@@ -108,6 +109,14 @@ router.get('/article/publish/:id', function(req, res) {
             }
         });
     });
+}
+
+router.get('/article/publishup/:id', function(req, res) {
+    publishArticle(req, res, parseInt(req.params.id), true);
+});
+
+router.get('/article/publish/:id', function(req, res) {
+    publishArticle(req, res, parseInt(req.params.id), false);
 });
 
 router.get('/tags/:startsWith', function(req, res) {

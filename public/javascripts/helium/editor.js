@@ -408,11 +408,13 @@
                     }
                 };
 
-                this.postArticle = function(id) {
+                this.postArticle = function(id, bringUp) {
+                    var bringUp = bringUp ? bringUp : false;
                     var article = this.getArticleByID(id);
                     if(article == null) return;
 
-                    $http.get('/editor/article/publish/' + id).
+                    var publishUrl = '/editor/article/' + (bringUp ? 'publishup/' : 'publish/');
+                    $http.get(publishUrl + id).
                         success(function(data, status, headers, config) {
                             if(data.code == 0) {
                                 article.title = data.article.title;

@@ -14,7 +14,18 @@
 
         <div class="col-lg-2">
             <button type="button" class="btn btn-primary" ng-disabled="!editorCtrl.currentArticle.modified" ng-click="editorCtrl.saveArticle()">Save</button>
-            <button type="button" class="btn btn-info" ng-disabled="editorCtrl.currentArticle.status!='modified' && editorCtrl.currentArticle.status != 'draft'" ng-click="editorCtrl.postArticle(editorCtrl.currentArticle.id)">Post</button>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-info" ng-disabled="editorCtrl.currentArticle.status!='modified' && editorCtrl.currentArticle.status != 'draft'" ng-click="editorCtrl.postArticle(editorCtrl.currentArticle.id)">Post</button>
+                <button type="button" class="btn btn-info dropdown-toggle" ng-disabled="editorCtrl.currentArticle.status!='modified' && editorCtrl.currentArticle.status != 'draft'" data-toggle="dropdown" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href ng-click="editorCtrl.postArticle(editorCtrl.currentArticle.id, true)">Post & Up</a></li>
+                </ul>
+            </div>
+
         </div>
 
     </div>
