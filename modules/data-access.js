@@ -161,6 +161,7 @@ var Article = bookshelf.Model.extend(
             return {
                     id: this.id,
                     url: this.get('id_url'),
+                    urlModified: this.get('id_url_modified'),
                     title: this.get('title'),
                     titleModified: this.get('title_modified'),
                     language: this.get('language'),

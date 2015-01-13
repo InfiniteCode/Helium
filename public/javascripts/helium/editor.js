@@ -155,6 +155,8 @@
                     this.currentArticle = {
                         id: null,
                         url: "",
+                        urlModified: "",
+                        urlWIP: "",
                         title: "",
                         titleModified: "",
                         titleWIP: "",
@@ -212,7 +214,8 @@
                                     ctrlT.currentArticle.modified = false;
                                     ctrlT.currentArticle.modifiedOn = data.article.modifiedOn;
                                     ctrlT.currentArticle.createdOn = data.article.createdOn;
-                                    ctrlT.currentArticle.url = data.article.url;
+                                    ctrlT.currentArticle.url = ctrlT.currentArticle.urlWIP;
+                                    ctrlT.currentArticle.urlModified = ctrlT.currentArticle.urlWIP;
                                     ctrlT.currentArticle.title = ctrlT.currentArticle.titleWIP;
                                     ctrlT.currentArticle.titleModified = ctrlT.currentArticle.titleWIP;
                                     ctrlT.currentArticle.body.modified = ctrlT.currentArticle.body.wip;
@@ -244,6 +247,7 @@
                                     ctrlT.currentArticle.modified = false;
                                     ctrlT.currentArticle.modifiedOn = data.article.modifiedOn;
                                     ctrlT.currentArticle.url = data.article.url;
+                                    ctrlT.currentArticle.urlModified = ctrlT.currentArticle.urlWIP;
                                     ctrlT.currentArticle.titleModified = ctrlT.currentArticle.titleWIP;
                                     ctrlT.currentArticle.body.modified = ctrlT.currentArticle.body.wip;
                                     ctrlT.currentArticle.tags.modified = ctrlT.currentArticle.tags.wip;
@@ -270,7 +274,37 @@
                     return true;
                 };
 
+                this.slug = function (text) {
+                    return text.toLowerCase()
+                            .replace(/ /g,'-')
+                            .replace(/[^\w-]+/g,'');
+                };
+
+                this.permalink = function(title) {
+                    var now = new Date();
+                    var link = this.userService.currentUser.id + "/" + now.getFullYear() + "/" + (now.getMonth() + 1) + "/" + now.getDate() + "/" + this.slug(title);
+                    return link;
+                }
+
                 this.articleTitleChanged = function() {
+                    this.currentArticle.modified = true;
+                    this.currentArticle.synced = false;
+
+                    //Automatically update permalink if we modify the title, but only
+                    //if article hasn't been published yet
+                    if(this.currentArticle.status != "published") {
+                        this.generatePermalink();
+                    }
+                };
+
+                this.generatePermalink = function() {
+                    var link = this.permalink(this.currentArticle.titleWIP);
+                    this.currentArticle.urlWIP = link;
+                    this.currentArticle.modified = true;
+                    this.currentArticle.synced = false;
+                };
+
+                this.articlePermalinkChanged = function() {
                     this.currentArticle.modified = true;
                     this.currentArticle.synced = false;
                 };
@@ -331,6 +365,7 @@
                                 article.tags = data.article.tags;
                                 article.body.wip = article.status == "published" ? article.body.original : article.body.modified;
                                 article.titleWIP = article.status == "published" ? article.title : article.titleModified;
+                                article.urlWIP = article.status == "published" ? article.url : article.urlModified;
                                 article.tags.wip = article.status == "published" ? article.tags.original : article.tags.modified;
                                 article.options.wip = article.status == "published" ? article.options.original : article.options.modified;
                                 ctrlT.currentArticle = article;
@@ -411,6 +446,7 @@
                                 article.options.original.private = data.article.private;
                                 article.options.original.comments = data.article.comments;
                                 article.title = data.article.title;
+                                article.url = data.article.url;
                                 article.status = data.article.status;
                                 article.modifiedOn = article.publishedOn;
                                 if(ctrlT.currentArticle.id == article.id) ctrlT.closeArticle();

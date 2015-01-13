@@ -11,7 +11,8 @@ function validLoginResponse(user, token) {
             email: userEmail,
             nameFirst: user.get("name_first"),
             nameLast: user.get("name_last"),
-            access: user.get("level")
+            access: user.get("level"),
+            id: user.get("id")
         },
         extra:
         {

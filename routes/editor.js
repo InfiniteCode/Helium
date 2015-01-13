@@ -67,10 +67,11 @@ router.get('/article/publish/:id', function(req, res) {
         var artComments = m.get('comments_modified')[0] ? true : false;
         var artPrivate = m.get('private_modified')[0] ? true : false;
         var artModTitle = m.get("title_modified");
-        var artUrl = userId + "/" + now.getFullYear() + "/" + (now.getMonth() + 1) + "/" + now.getDate() + "/" + convertToSlug(artModTitle.toLowerCase());
+        var artModUrl = m.get("id_url_modified");
         m.attributes['title_modified'] = null;
+        m.attributes['id_url_modified'] = null;
         m.attributes['title'] = artModTitle;
-        m.attributes['id_url'] = artUrl;
+        m.attributes['id_url'] = artModUrl;
         m.attributes['modified'] = false;
         m.attributes['published_on'] = now;
         m.attributes['private'] = artPrivate;
@@ -98,7 +99,7 @@ router.get('/article/publish/:id', function(req, res) {
             code: 0,
             article: {
                 title: artModTitle,
-                url: artUrl,
+                url: artModUrl,
                 status: "published",
                 hidden: artHidden,
                 private: artPrivate,
@@ -136,11 +137,13 @@ router.get('/article/rollback/:id', function(req, res) {
             return;
         } else {
             var artTitle = m.get("title");
+            var artUrl = m.get("id_url");
             var artHidden = m.get('hidden')[0] ? true : false;
             var artPrivate = m.get('private')[0] ? true : false;
             var artComments = m.get('comments')[0] ? true : false;
 
             m.attributes["title_modified"] = null;
+            m.attributes["id_url_modified"] = null;
             m.attributes["private_modified"] = artPrivate;
             m.attributes["hidden_modified"] = artComments;
             m.attributes["comments_modified"] = artHidden;
@@ -160,6 +163,7 @@ router.get('/article/rollback/:id', function(req, res) {
                 article: {
                     id: artId,
                     title: artTitle,
+                    url: artUrl,
                     status: "published",
                     hidden: artHidden,
                     private: artPrivate,
@@ -182,12 +186,13 @@ router.post('/article/create', function(req, res) {
     var artPrivate = req.body.options.wip.private;
     var artHidden = req.body.options.wip.hidden;
     var artComments = req.body.options.wip.comments;
-    var artUrl = userId + "/" + now.getFullYear() + "/" + (now.getMonth() + 1) + "/" + now.getDate() + "/" + convertToSlug(artTitle.toLowerCase());
+    var artUrl = req.body.urlWIP;
     var artTags = req.body.tags.wip;
 
     //TODO Consider making this as a single transaction
     da.Article.forge({
         id_url: artUrl,
+        id_url_modified: artUrl,
         title: artTitle,
         title_modified: artTitle,
         author: userId,
@@ -245,8 +250,7 @@ router.post('/article/create', function(req, res) {
             article: {
                 id: artId,
                 modifiedOn: now.getTime(),
-                createdOn: now.getTime(),
-                url: artUrl
+                createdOn: now.getTime()
             }
         });
     });
@@ -305,7 +309,7 @@ router.put('/article/:id', function(req, res) {
     var artPrivate = req.body.options.wip.private;
     var artHidden = req.body.options.wip.hidden;
     var artComments = req.body.options.wip.comments;
-    var artUrl = userId + "/" + now.getFullYear() + "/" + (now.getMonth() + 1) + "/" + now.getDate() + "/" + convertToSlug(artTitle.toLowerCase());
+    var artUrl = req.body.urlWIP;
     var artTags = req.body.tags.wip;
     var artId = req.params.id;
 
@@ -314,6 +318,7 @@ router.put('/article/:id', function(req, res) {
             res.status(400).send('Access denied.');
         else {
             m.attributes['title_modified'] = artTitle;
+            m.attributes['id_url_modified'] = artUrl;
             m.attributes['private_modified'] = artPrivate;
             m.attributes['hidden_modified'] = artHidden;
             m.attributes['comments_modified'] = artComments;
