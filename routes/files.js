@@ -14,7 +14,7 @@ var multipartMiddleware = multipart();
     autoFiles - Enables file events and disables part events for files. This is automatically set to true if you add a file listener.
     uploadDir - Only relevant when autoFiles is true. The directory for placing file uploads in. You can move them later using fs.rename(). Defaults to os.tmpDir().
     */
-var easyimg = require('easyimage');
+//var easyimg = require('easyimage');
 var fs = require('fs');
 var path = require('path');
 var mkdirp = require('mkdirp');
